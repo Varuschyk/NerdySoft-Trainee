@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: nerdySoft-app
+  datasource:
+    url: jdbc:h2:mem:nerdySoft
+    username: trainee
+    password: trainee
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
