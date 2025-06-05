@@ -1,15 +1,14 @@
 package com.nerdysoft.apicore.persistence.entity;
 
 import java.time.Instant;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import lombok.Builder;
-import lombok.ToString;
-import lombok.EqualsAndHashCode;
+import java.util.List;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -18,8 +17,7 @@ import org.springframework.data.annotation.CreatedDate;
 @Entity
 @Table
 @Builder
-@ToString
-@EqualsAndHashCode
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -27,10 +25,19 @@ public class MemberEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  String id;
+  @Column(name = "id")
+  Long id;
 
-  String name;
+  @Column(name = "name", nullable = false)
+  @NotBlank String name;
 
   @CreatedDate
-  Instant membershipDate;
+  @Column(name = "membership_date", nullable = false)
+  @NotNull Instant membershipDate;
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "member_book",
+      joinColumns = @JoinColumn(name = "member_id"),
+      inverseJoinColumns = @JoinColumn(name = "book_id"))
+  @NotNull List<BookEntity> borrowedBooks;
 }

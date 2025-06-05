@@ -1,35 +1,39 @@
 package com.nerdysoft.apicore.persistence.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import lombok.Builder;
-import lombok.ToString;
-import lombok.EqualsAndHashCode;
+import java.util.List;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table
+@Data
 @Builder
-@ToString
-@EqualsAndHashCode
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  String id;
+  Long id;
 
-  String title;
+  @Column(name = "title", nullable = false)
+  @NotBlank String title;
 
-  String author;
+  @Column(name = "author", nullable = false)
+  @NotBlank String author;
 
-  Integer amount;
+  @Column(name = "amount", nullable = false)
+  @NotNull Integer amount;
+
+  @ManyToMany(mappedBy = "borrowedBooks", fetch = FetchType.LAZY)
+  @NotNull List<MemberEntity> members;
 }

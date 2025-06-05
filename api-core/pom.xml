@@ -26,8 +26,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.task</groupId>
-            <artifactId>faifly-web-api</artifactId>
+            <groupId>com.nerdysoft</groupId>
+            <artifactId>web-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
