@@ -22,6 +22,7 @@
         <lombok.version>1.18.36</lombok.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <mapstruct-lombok.version>0.2.0</mapstruct-lombok.version>
+        <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
     </properties>
 
     <dependencies>
@@ -76,6 +77,11 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.6</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -95,6 +101,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.nerdysoft.nerdysoftapp.NerdySoftAppApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

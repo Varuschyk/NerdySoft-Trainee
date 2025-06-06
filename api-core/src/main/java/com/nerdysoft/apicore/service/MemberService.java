@@ -13,5 +13,5 @@ public interface MemberService {
   MemberReadPojo update(@Nonnull Long id,
                         @Nonnull MemberWritePojo MemberWritePojo);
 
-  void delete(@Nonnull Long id);
+  MemberReadPojo delete(@Nonnull Long id);
 }

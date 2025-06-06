@@ -12,3 +12,9 @@ spring:
   h2:
     console:
       enabled: true
+library:
+  book:
+    borrow-limit: 5
+
+springdoc:
+  packages-to-scan: com.nerdysoft.nerdysoftapp, com.nerdysoft.apicore

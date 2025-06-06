@@ -5,12 +5,14 @@ import java.util.List;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table
@@ -26,9 +28,14 @@ public class BookEntity {
   Long id;
 
   @Column(name = "title", nullable = false)
+  @Pattern(regexp = "^[A-Z].*$",
+      message = "Title must start from capital letter.")
   @NotBlank String title;
 
   @Column(name = "author", nullable = false)
+  @Pattern(regexp = "^[A-Z][a-z]+\\\\s[A-Z][a-z]+$",
+      message = "Author doesn't match required initials.")
+  @Length(min = 3)
   @NotBlank String author;
 
   @Column(name = "amount", nullable = false)

@@ -1,6 +1,6 @@
 package com.nerdysoft.webapi.controller.library;
 
-import com.nerdysoft.webapi.dto.BorrowBooksRequestDto;
+import com.nerdysoft.webapi.dto.library.BorrowBooksRequestDto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;

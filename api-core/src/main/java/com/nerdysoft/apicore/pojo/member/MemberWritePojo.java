@@ -7,8 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Getter
 @Builder
 @ToString
@@ -16,5 +14,4 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MemberWritePojo {
   String name;
-  List<Long> bookIds;
 }

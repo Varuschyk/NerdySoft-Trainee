@@ -8,6 +8,7 @@ import com.nerdysoft.apicore.service.MemberService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class MemberServiceImpl implements MemberService {
 
   @Nonnull
   @Override
+  @Transactional(readOnly = true)
   public MemberReadPojo get(@Nonnull final Long id) {
     final var memberEntity =  memberJPARepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Member not found!"));
@@ -26,6 +28,7 @@ public class MemberServiceImpl implements MemberService {
 
   @Nonnull
   @Override
+  @Transactional
   public MemberReadPojo create(@Nonnull final MemberWritePojo memberWritePojo) {
     final var memberToSave = memberMapper.toMemberEntity(memberWritePojo);
     final var savedMember = memberJPARepository.save(memberToSave);
@@ -34,6 +37,7 @@ public class MemberServiceImpl implements MemberService {
 
   @Nonnull
   @Override
+  @Transactional
   public MemberReadPojo update(@Nonnull final Long id,
                                @Nonnull final MemberWritePojo memberWritePojo) {
     final var memberEntity = memberJPARepository.findById(id)
@@ -43,10 +47,16 @@ public class MemberServiceImpl implements MemberService {
     return memberMapper.toMemberReadPojo(updateMemberEntity);
   }
 
-  @Nonnull
   @Override
-  public void delete(@Nonnull final Long id) {
-    memberJPARepository.findById(id)
-        .ifPresentOrElse(memberJPARepository::delete, () -> new RuntimeException("Member not found"));
+  @Transactional
+  public MemberReadPojo delete(@Nonnull final Long id) {
+    final var memberEntity = memberJPARepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Member not found"));
+    if (memberEntity.getBorrowedBooks().isEmpty()) {
+      throw new RuntimeException("Member can not be deleted if it has borrowed books.");
+    }
+
+    memberJPARepository.deleteById(id);
+    return memberMapper.toMemberReadPojo(memberEntity);
   }
 }

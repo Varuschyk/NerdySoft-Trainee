@@ -12,12 +12,12 @@ public interface BookService {
 
   List<BookReadPojo> get(@Nonnull String memberName);
 
-  List<BookReadPojo> getBorrowed(@Nonnull final String title);
+  List<BookReadPojo> getBorrowedByTitle(@Nonnull String title);
 
   BookReadPojo create(@Nonnull BookWritePojo bookWritePojo);
 
   BookReadPojo update(@Nonnull Long id,
                       @Nonnull BookWritePojo bookWritePojo);
 
-  void delete(@Nonnull Long id);
+  BookReadPojo delete(@Nonnull Long id);
 }

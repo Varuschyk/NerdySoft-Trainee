@@ -6,13 +6,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookJPARepository extends JpaRepository<BookEntity, Long> {
 
-  @Nonnull
+
   List<BookEntity> findByMembersName(@Nonnull final String memberName);
 
-  @Nonnull
-  List<BookEntity> findByMembersIsNotEmpty(@Nonnull final String title);
+  List<BookEntity> findAllByMembersIsNotEmptyAndTitle(@Nonnull final String title);
+
+  boolean existsByMembersIsNotEmptyAndId(@Nonnull final Long id);
+
+  BookEntity deleteByAmount(@Nonnull final Long id);
+
+  List<BookEntity> findByTitle(@Nonnull final String title);
+
+  Optional<BookEntity> findByAuthorAndTitle(@Nonnull final String authorName,
+                                            @Nonnull final String title);
 }

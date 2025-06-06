@@ -21,9 +21,8 @@
         <lombok.version>1.18.36</lombok.version>
         <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
         <jackson.version>2.14.2</jackson.version>
-        <jakarta.validation.version>3.1.1</jakarta.validation.version>
-        <swagger-annotations-jakarta.version>2.2.7</swagger-annotations-jakarta.version>
         <jakarta.jakartaee-web-api.version>10.0.0</jakarta.jakartaee-web-api.version>
+        <swagger-annotations-jakarta.version>2.2.30</swagger-annotations-jakarta.version>
     </properties>
 
     <dependencies>
@@ -53,6 +52,11 @@
             <artifactId>jakarta.jakartaee-web-api</artifactId>
             <version>${jakarta.jakartaee-web-api.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <version>${swagger-annotations-jakarta.version}</version>
         </dependency>
     </dependencies>
 
