@@ -3,6 +3,9 @@ package com.nerdysoft.apicore.exception;
 import jakarta.annotation.Nonnull;
 import java.io.Serial;
 
+/**
+ * Global NotFoundException type for fails when resource was not found.
+ */
 public class NotFoundException extends RuntimeException {
 
 	@Serial

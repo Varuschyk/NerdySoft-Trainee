@@ -1,11 +1,17 @@
 package com.nerdysoft.apicore.pojo.member;
 
+import java.time.Instant;
 import com.nerdysoft.webapi.dto.member.MemberBorrowedBooksResponseDto;
-import lombok.*;
+import lombok.Getter;
+import lombok.Builder;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
+import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
-
+/**
+ * Represents a simple pojo that encapsulates member read data.
+ */
 @Getter
 @Builder
 @ToString

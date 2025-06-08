@@ -1,12 +1,14 @@
 package com.nerdysoft.apicore.persistence.repository;
 
+import java.util.Optional;
 import com.nerdysoft.apicore.persistence.entity.BookEntity;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
+/**
+ * Repository of {@link BookEntity}.
+ */
 @Repository
 public interface BookJPARepository extends JpaRepository<BookEntity, Long> {
 

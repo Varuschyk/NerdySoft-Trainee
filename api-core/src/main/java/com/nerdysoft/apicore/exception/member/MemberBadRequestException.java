@@ -5,6 +5,9 @@ import jakarta.annotation.Nonnull;
 
 import java.io.Serial;
 
+/**
+ * {@link BadRequestException} type for MemberEntity fails.
+ */
 public class MemberBadRequestException extends BadRequestException {
 
 	@Serial

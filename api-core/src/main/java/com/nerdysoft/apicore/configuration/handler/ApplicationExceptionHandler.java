@@ -1,5 +1,6 @@
 package com.nerdysoft.apicore.configuration.handler;
 
+import java.util.UUID;
 import com.nerdysoft.apicore.exception.BadRequestException;
 import com.nerdysoft.apicore.exception.NotFoundException;
 import com.nerdysoft.webapi.error.ErrorResponseDto;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.UUID;
-
+/**
+ * It is used to create a global exception handler that returns a JSON response.
+ * It is to return a specific error response in case of an exception.
+ */
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor

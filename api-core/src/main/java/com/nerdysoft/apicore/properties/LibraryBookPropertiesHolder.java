@@ -6,6 +6,9 @@ import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Encapsulates the library properties.
+ */
 @Validated
 @Value
 @RequiredArgsConstructor

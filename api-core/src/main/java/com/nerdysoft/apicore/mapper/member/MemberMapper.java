@@ -1,5 +1,7 @@
 package com.nerdysoft.apicore.mapper.member;
 
+import java.time.Instant;
+import java.util.Collections;
 import com.nerdysoft.apicore.persistence.entity.MemberEntity;
 import com.nerdysoft.apicore.pojo.member.MemberReadPojo;
 import com.nerdysoft.apicore.pojo.member.MemberWritePojo;
@@ -11,9 +13,9 @@ import jakarta.annotation.Nonnull;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
-import java.time.Instant;
-import java.util.Collections;
-
+/**
+ * Mapper for {@link MemberEntity}.
+ */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface MemberMapper {
 

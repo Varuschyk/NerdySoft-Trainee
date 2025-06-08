@@ -1,5 +1,8 @@
 package com.nerdysoft.apicore.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import com.nerdysoft.apicore.exception.book.BookNotFoundException;
 import com.nerdysoft.apicore.exception.library.LibraryBadRequestException;
 import com.nerdysoft.apicore.exception.member.MemberNotFoundException;
@@ -18,10 +21,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+/**
+ * Implementation of {@link LibraryService}.
+ */
 @Service
 @RequiredArgsConstructor
 @EnableConfigurationProperties(LibraryBookPropertiesHolder.class)

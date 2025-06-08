@@ -3,6 +3,9 @@ package com.nerdysoft.apicore.exception;
 import jakarta.annotation.Nonnull;
 import java.io.Serial;
 
+/**
+ * Global BadRequestException type when request was malformed.
+ */
 public class BadRequestException extends RuntimeException {
 
 	@Serial

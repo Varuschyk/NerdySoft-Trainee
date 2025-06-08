@@ -1,5 +1,6 @@
 package com.nerdysoft.apicore.mapper.book;
 
+import java.util.Collections;
 import com.nerdysoft.apicore.persistence.entity.BookEntity;
 import com.nerdysoft.apicore.pojo.book.BookReadPojo;
 import com.nerdysoft.apicore.pojo.book.BookWritePojo;
@@ -9,8 +10,9 @@ import jakarta.annotation.Nonnull;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
-import java.util.Collections;
-
+/**
+ * Mapper for {@link BookEntity}.
+ */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookMapper {
 

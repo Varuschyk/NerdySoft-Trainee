@@ -1,5 +1,6 @@
 package com.nerdysoft.apicore.service.impl;
 
+import java.util.Objects;
 import com.nerdysoft.apicore.exception.book.BookBadRequestException;
 import com.nerdysoft.apicore.exception.book.BookNotFoundException;
 import com.nerdysoft.apicore.mapper.book.BookMapper;
@@ -13,8 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
+/**
+ * Implementation of {@link BookService}.
+ */
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {

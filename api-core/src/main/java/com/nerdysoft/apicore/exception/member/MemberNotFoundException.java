@@ -4,6 +4,9 @@ import com.nerdysoft.apicore.exception.NotFoundException;
 import jakarta.annotation.Nonnull;
 import java.io.Serial;
 
+/**
+ * {@link NotFoundException} type for MemberEntity fails.
+ */
 public class MemberNotFoundException extends NotFoundException {
 
 	@Serial

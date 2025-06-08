@@ -7,6 +7,9 @@ import lombok.EqualsAndHashCode;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Represents a simple pojo that encapsulates book read data.
+ */
 @Getter
 @Builder
 @ToString

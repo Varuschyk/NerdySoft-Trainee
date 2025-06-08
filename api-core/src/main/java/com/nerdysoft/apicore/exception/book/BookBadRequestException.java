@@ -4,6 +4,9 @@ import com.nerdysoft.apicore.exception.BadRequestException;
 import jakarta.annotation.Nonnull;
 import java.io.Serial;
 
+/**
+ * {@link BadRequestException} type for BookEntity fails.
+ */
 public class BookBadRequestException extends BadRequestException {
 
 	@Serial
