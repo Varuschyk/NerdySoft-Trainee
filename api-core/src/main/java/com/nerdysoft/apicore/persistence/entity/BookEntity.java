@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 
 @Entity
-@Table
+@Table(name = "books")
 @Data
 @Builder
 @NoArgsConstructor

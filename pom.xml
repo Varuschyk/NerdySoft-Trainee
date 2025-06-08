@@ -27,7 +27,6 @@
         <module>api-core</module>
         <module>web-api</module>
         <module>nerdySoft-app</module>
-        <module>component-test</module>
     </modules>
 
     <dependencies>

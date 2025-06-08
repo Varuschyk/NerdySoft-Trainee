@@ -30,13 +30,13 @@ public class BookControllerImpl implements BookController {
     return bookMapper.toBookResponseDto(bookReadPojo);
   }
 
-  @GetMapping("/book/borrowed")
+  @GetMapping("/book/borrowed/member")
   public List<BookResponseDto> getBorrowedByMemberName(@Valid @NotBlank @RequestParam("memberName") final String memberName) {
-    final var bookReadPojo = bookService.get(memberName);
+    final var bookReadPojo = bookService.getBorrowedByMember(memberName);
     return bookReadPojo.stream().map(bookMapper::toBookResponseDto).toList();
   }
 
-  @GetMapping("/book/title")
+  @GetMapping("/book/borrowed/title")
   public BooksResponseDto getBorrowedByTitle(@Valid @NotBlank @RequestParam("title") final String title) {
     final var booksReadPojo = bookService.getBorrowedByTitle(title);
     final var booksResponseDto = booksReadPojo.stream().map(bookMapper::toBookResponseDto).toList();

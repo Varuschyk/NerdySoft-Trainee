@@ -1,7 +1,10 @@
 package com.nerdysoft.apicore.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
+import com.nerdysoft.apicore.exception.book.BookBadRequestException;
+import com.nerdysoft.apicore.exception.book.BookNotFoundException;
 import com.nerdysoft.apicore.mapper.book.BookMapper;
 import com.nerdysoft.apicore.persistence.repository.BookJPARepository;
 import com.nerdysoft.apicore.pojo.book.BookReadPojo;
@@ -24,15 +27,15 @@ public class BookServiceImpl implements BookService {
   @Transactional(readOnly = true)
   public BookReadPojo get(@Nonnull final Long id) {
     final var bookEntity = bookJPARepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Book not found"));
+        .orElseThrow(() -> new BookNotFoundException("Book not found"));
     return bookMapper.toBookReadPojo(bookEntity);
   }
 
   @Nonnull
   @Override
   @Transactional(readOnly = true)
-  public List<BookReadPojo> get(@Nonnull final String memberName) {
-    final var books =  bookJPARepository.findAllByMembersIsNotEmptyAndTitle(memberName);
+  public List<BookReadPojo> getBorrowedByMember(@Nonnull final String memberName) {
+    final var books =  bookJPARepository.findAllByMembersIsNotEmptyAndMembersName(memberName);
     return books.stream().map(bookMapper::toBookReadPojo).toList();
   }
 
@@ -49,17 +52,7 @@ public class BookServiceImpl implements BookService {
   @Transactional
   public BookReadPojo create(@Nonnull final BookWritePojo bookWritePojo) {
     final var bookToSave = bookMapper.toBookEntity(bookWritePojo);
-    final var alreadyExistedBookEntity =
-        bookJPARepository.findByAuthorAndTitle(bookToSave.getAuthor(), bookToSave.getTitle());
-
-    if (alreadyExistedBookEntity.isPresent()) {
-      final var updateBookEntity = alreadyExistedBookEntity.get();
-      updateBookEntity.setAmount(updateBookEntity.getAmount() + 1);
-      final var updatedBookEntity = bookJPARepository.save(updateBookEntity);
-      return bookMapper.toBookReadPojo(updatedBookEntity);
-    }
-
-    final var savedBookEntity = bookJPARepository.save(bookToSave);
+    final var savedBookEntity = bookJPARepository.upsertBook(bookToSave.getAuthor(), bookToSave.getTitle());
     return bookMapper.toBookReadPojo(savedBookEntity);
   }
 
@@ -68,26 +61,24 @@ public class BookServiceImpl implements BookService {
   @Transactional
   public BookReadPojo update(@Nonnull final Long id,
                              @Nonnull final BookWritePojo bookWritePojo) {
-    final var bookEntity = bookJPARepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Book not found"));
-    bookEntity.setTitle(bookWritePojo.getTitle());
-    bookEntity.setAuthor(bookWritePojo.getAuthor());
-    bookEntity.setAmount(bookWritePojo.getAmount());
-    final var updateBookEntity = bookJPARepository.save(bookEntity);
+    final var updateBookEntity = bookJPARepository.updateBookById(id,
+        bookWritePojo.getTitle(), bookWritePojo.getAuthor(), bookWritePojo.getAmount())
+        .orElseThrow(() -> new BookNotFoundException("Book not found"));
     return bookMapper.toBookReadPojo(updateBookEntity);
   }
 
+  @Nonnull
   @Override
   @Transactional
   public BookReadPojo delete(@Nonnull final Long id) {
     final var bookEntity = bookJPARepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Book not found"));
+        .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
-    if (bookJPARepository.existsByMembersIsNotEmptyAndId(id)) {
-      throw new RuntimeException("A book can not be deleted if at least one of it is borrowed.");
+    if (Objects.nonNull(bookEntity.getMembers()) && !bookEntity.getMembers().isEmpty()) {
+      throw new BookBadRequestException("A book can not be deleted if at least one of it is borrowed.");
     }
 
-    bookJPARepository.deleteById(id);
+    bookJPARepository.delete(bookEntity);
     return bookMapper.toBookReadPojo(bookEntity);
   }
 }

@@ -10,7 +10,7 @@ public interface BookService {
 
   BookReadPojo get(@Nonnull Long id);
 
-  List<BookReadPojo> get(@Nonnull String memberName);
+  List<BookReadPojo> getBorrowedByMember(@Nonnull String memberName);
 
   List<BookReadPojo> getBorrowedByTitle(@Nonnull String title);
 

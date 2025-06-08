@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
-@Table
+@Table(name = "members")
 @Builder
 @Data
 @AllArgsConstructor

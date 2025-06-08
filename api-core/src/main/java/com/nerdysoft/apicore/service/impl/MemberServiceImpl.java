@@ -1,5 +1,7 @@
 package com.nerdysoft.apicore.service.impl;
 
+import com.nerdysoft.apicore.exception.member.MemberBadRequestException;
+import com.nerdysoft.apicore.exception.member.MemberNotFoundException;
 import com.nerdysoft.apicore.mapper.member.MemberMapper;
 import com.nerdysoft.apicore.persistence.repository.MemberJPARepository;
 import com.nerdysoft.apicore.pojo.member.MemberReadPojo;
@@ -22,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
   @Transactional(readOnly = true)
   public MemberReadPojo get(@Nonnull final Long id) {
     final var memberEntity =  memberJPARepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Member not found!"));
+        .orElseThrow(() -> new MemberNotFoundException("Member not found!"));
     return memberMapper.toMemberReadPojo(memberEntity);
   }
 
@@ -40,10 +42,8 @@ public class MemberServiceImpl implements MemberService {
   @Transactional
   public MemberReadPojo update(@Nonnull final Long id,
                                @Nonnull final MemberWritePojo memberWritePojo) {
-    final var memberEntity = memberJPARepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Member not found"));
-    memberEntity.setName(memberWritePojo.getName());
-    final var updateMemberEntity = memberJPARepository.save(memberEntity);
+    final var updateMemberEntity = memberJPARepository.updateMemberById(id, memberWritePojo.getName())
+        .orElseThrow(() -> new MemberNotFoundException("Member not found!"));
     return memberMapper.toMemberReadPojo(updateMemberEntity);
   }
 
@@ -51,9 +51,10 @@ public class MemberServiceImpl implements MemberService {
   @Transactional
   public MemberReadPojo delete(@Nonnull final Long id) {
     final var memberEntity = memberJPARepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Member not found"));
-    if (memberEntity.getBorrowedBooks().isEmpty()) {
-      throw new RuntimeException("Member can not be deleted if it has borrowed books.");
+        .orElseThrow(() -> new MemberNotFoundException("Member not found"));
+
+    if (!memberEntity.getBorrowedBooks().isEmpty()) {
+      throw new MemberBadRequestException("Member can not be deleted if it has borrowed books.");
     }
 
     memberJPARepository.deleteById(id);
