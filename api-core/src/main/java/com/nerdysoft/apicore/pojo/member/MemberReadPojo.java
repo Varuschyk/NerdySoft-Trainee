@@ -1,15 +1,10 @@
 package com.nerdysoft.apicore.pojo.member;
 
-import java.time.Instant;
-import java.util.List;
-
-import com.nerdysoft.apicore.pojo.book.BookReadPojo;
-import lombok.Getter;
-import lombok.Builder;
-import lombok.ToString;
-import lombok.EqualsAndHashCode;
-import lombok.AccessLevel;
+import com.nerdysoft.webapi.dto.member.MemberBorrowedBooksResponseDto;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.Instant;
 
 @Getter
 @Builder
@@ -19,5 +14,5 @@ import lombok.experimental.FieldDefaults;
 public class MemberReadPojo {
   String name;
   Instant membershipDate;
-  List<BookReadPojo> booksReadPojo;
+  MemberBorrowedBooksResponseDto borrowedBooks;
 }

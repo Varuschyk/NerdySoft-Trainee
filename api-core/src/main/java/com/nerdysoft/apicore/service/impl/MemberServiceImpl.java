@@ -42,9 +42,12 @@ public class MemberServiceImpl implements MemberService {
   @Transactional
   public MemberReadPojo update(@Nonnull final Long id,
                                @Nonnull final MemberWritePojo memberWritePojo) {
-    final var updateMemberEntity = memberJPARepository.updateMemberById(id, memberWritePojo.getName())
+    final var memberEntity = memberJPARepository.findById(id)
         .orElseThrow(() -> new MemberNotFoundException("Member not found!"));
-    return memberMapper.toMemberReadPojo(updateMemberEntity);
+    final var memberEntityToSave = memberMapper.toMemberEntity(memberWritePojo);
+    memberEntityToSave.setId(memberEntity.getId());
+    final var updatedMemberEntity = memberJPARepository.save(memberEntityToSave);
+    return memberMapper.toMemberReadPojo(updatedMemberEntity);
   }
 
   @Override

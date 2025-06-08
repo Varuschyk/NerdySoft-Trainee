@@ -1,7 +1,5 @@
 package test.service.book;
 
-import java.util.List;
-import java.util.Optional;
 import com.nerdysoft.apicore.exception.book.BookBadRequestException;
 import com.nerdysoft.apicore.exception.book.BookNotFoundException;
 import com.nerdysoft.apicore.mapper.book.BookMapper;
@@ -15,8 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -79,67 +79,14 @@ public class TestBookServiceImpl {
 		verify(bookJPARepository, only()).findById(BOOK_ID);
 	}
 
-	@Test
-	public void should_GetBorrowedBook_ByMemberName_Successfully() {
-		when(bookJPARepository.findAllByMembersIsNotEmptyAndMembersName(MEMBER_NAME))
-				.thenReturn(BORROWED_BOOKS);
-		when(bookMapper.toBookReadPojo(BOOK_ENTITY))
-				.thenReturn(BOOK_READ_POJO);
-
-		final var result = bookService.getBorrowedByMember(MEMBER_NAME);
-		assertNotNull(result);
-		assertEquals(List.of(BOOK_READ_POJO), result);
-
-		verify(bookJPARepository, only()).findAllByMembersIsNotEmptyAndMembersName(MEMBER_NAME);
-		verify(bookMapper, atLeast(1)).toBookReadPojo(BOOK_ENTITY);
-	}
-
-	@Test
-	public void should_GetBorrowedBook_ByMemberName_and_ReturnEmptyList() {
-		when(bookJPARepository.findAllByMembersIsNotEmptyAndMembersName(MEMBER_NAME))
-				.thenReturn(List.of());
-
-		final var result = bookService.getBorrowedByMember(MEMBER_NAME);
-		assertNotNull(result);
-		assertTrue(result.isEmpty());
-
-		verify(bookJPARepository, only()).findAllByMembersIsNotEmptyAndMembersName(MEMBER_NAME);
-		verify(bookMapper, Mockito.never()).toBookReadPojo(BOOK_ENTITY);
-	}
-
-	@Test
-	public void should_GetBorrowedBook_ByTitle_Successfully() {
-		when(bookJPARepository.findAllByMembersIsNotEmptyAndTitle(BOOK_TITLE))
-				.thenReturn(BORROWED_BOOKS);
-		when(bookMapper.toBookReadPojo(BOOK_ENTITY))
-				.thenReturn(BOOK_READ_POJO);
-
-		final var result = bookService.getBorrowedByTitle(BOOK_TITLE);
-		assertNotNull(result);
-		assertEquals(List.of(BOOK_READ_POJO), result);
-
-		verify(bookJPARepository, only()).findAllByMembersIsNotEmptyAndTitle(BOOK_TITLE);
-		verify(bookMapper, atLeast(1)).toBookReadPojo(BOOK_ENTITY);
-	}
-
-	@Test
-	public void should_GetBorrowedBook_ByTitle_and_ReturnEmptyList() {
-		when(bookJPARepository.findAllByMembersIsNotEmptyAndTitle(BOOK_TITLE))
-				.thenReturn(List.of());
-
-		final var result = bookService.getBorrowedByTitle(BOOK_TITLE);
-		assertNotNull(result);
-		assertTrue(result.isEmpty());
-
-		verify(bookJPARepository, only()).findAllByMembersIsNotEmptyAndTitle(BOOK_TITLE);
-		verify(bookMapper, never()).toBookReadPojo(BOOK_ENTITY);
-	}
 
 	@Test
 	public void should_CreateBook_Successfully() {
 		when(bookMapper.toBookEntity(BOOK_WRITE_POJO))
 				.thenReturn(BOOK_ENTITY);
-		when(bookJPARepository.upsertBook(BOOK_AUTHOR, BOOK_TITLE))
+		when(bookJPARepository.findByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR))
+				.thenReturn(Optional.of(BOOK_ENTITY));
+		when(bookJPARepository.save(BOOK_ENTITY))
 				.thenReturn(BOOK_ENTITY);
 		when(bookMapper.toBookReadPojo(BOOK_ENTITY))
 				.thenReturn(BOOK_READ_POJO);
@@ -149,14 +96,19 @@ public class TestBookServiceImpl {
 		assertEquals(BOOK_READ_POJO, result);
 
 		verify(bookMapper, times(1)).toBookEntity(BOOK_WRITE_POJO);
-		verify(bookJPARepository, only()).upsertBook(BOOK_AUTHOR, BOOK_TITLE);
+		verify(bookJPARepository, times(1)).findByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR);
+		verify(bookJPARepository, times(1)).save(BOOK_ENTITY);
 		verify(bookMapper,  times(1)).toBookReadPojo(BOOK_ENTITY);
 	}
 
 	@Test
 	public void should_UpdateBook_Successfully() {
-		when(bookJPARepository.updateBookById(BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, BOOK_AMOUNT))
+		when(bookJPARepository.findById(BOOK_ID))
 				.thenReturn(Optional.of(BOOK_ENTITY));
+		when(bookMapper.toBookEntity(BOOK_WRITE_POJO))
+				.thenReturn(BOOK_ENTITY);
+		when(bookJPARepository.save(BOOK_ENTITY))
+				.thenReturn(BOOK_ENTITY);
 		when(bookMapper.toBookReadPojo(BOOK_ENTITY))
 				.thenReturn(BOOK_READ_POJO);
 
@@ -164,18 +116,20 @@ public class TestBookServiceImpl {
 		assertNotNull(result);
 		assertEquals(BOOK_READ_POJO, result);
 
-		verify(bookJPARepository, only()).updateBookById(BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, BOOK_AMOUNT);
-		verify(bookMapper, only()).toBookReadPojo(BOOK_ENTITY);
+		verify(bookJPARepository, times(1)).findById(BOOK_ID);
+		verify(bookMapper, times(1)).toBookEntity(BOOK_WRITE_POJO);
+		verify(bookJPARepository, times(1)).save(BOOK_ENTITY);
+		verify(bookMapper, times(1)).toBookReadPojo(BOOK_ENTITY);
 	}
 
 	@Test
 	public void should_UpdateBook_and_ThrowBookNotFoundException() {
-		when(bookJPARepository.updateBookById(BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, BOOK_AMOUNT))
+		when(bookJPARepository.findById(BOOK_ID))
 				.thenReturn(Optional.empty());
 
 		assertThrows(BookNotFoundException.class, () -> bookService.update(BOOK_ID, BOOK_WRITE_POJO));
 
-		verify(bookJPARepository, only()).updateBookById(BOOK_ID, BOOK_TITLE, BOOK_AUTHOR, BOOK_AMOUNT);
+		verify(bookJPARepository, only()).findById(BOOK_ID);
 	}
 
 	@Test

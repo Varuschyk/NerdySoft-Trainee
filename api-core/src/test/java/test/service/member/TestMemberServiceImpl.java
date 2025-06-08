@@ -92,8 +92,12 @@ public class TestMemberServiceImpl {
 
 	@Test
 	public void should_UpdateMember_Successfully() {
-		when(memberJPARepository.updateMemberById(MEMBER_ID, MEMBER_NAME))
+		when(memberJPARepository.findById(MEMBER_ID))
 				.thenReturn(Optional.of(MEMBER_ENTITY));
+		when(memberMapper.toMemberEntity(MEMBER_WRITE_POJO))
+				.thenReturn(MEMBER_ENTITY);
+		when(memberJPARepository.save(MEMBER_ENTITY))
+				.thenReturn(MEMBER_ENTITY);
 		when(memberMapper.toMemberReadPojo(MEMBER_ENTITY))
 				.thenReturn(MEMBER_READ_POJO);
 
@@ -101,18 +105,20 @@ public class TestMemberServiceImpl {
 		assertNotNull(result);
 		assertEquals(MEMBER_READ_POJO, result);
 
-		verify(memberJPARepository, only()).updateMemberById(MEMBER_ID, MEMBER_NAME);
-		verify(memberMapper, only()).toMemberReadPojo(MEMBER_ENTITY);
+		verify(memberJPARepository, times(1)).findById(MEMBER_ID);
+		verify(memberMapper, times(1)).toMemberEntity(MEMBER_WRITE_POJO);
+		verify(memberJPARepository, times(1)).save(MEMBER_ENTITY);
+		verify(memberMapper, times(1)).toMemberReadPojo(MEMBER_ENTITY);
 	}
 
 	@Test
 	public void should_UpdateMember_and_ThrowMemberNotFoundException() {
-		when(memberJPARepository.updateMemberById(MEMBER_ID, MEMBER_NAME))
+		when(memberJPARepository.findById(MEMBER_ID))
 				.thenReturn(Optional.empty());
 
 		assertThrows(MemberNotFoundException.class, () -> memberService.update(MEMBER_ID, MEMBER_WRITE_POJO));
 
-		verify(memberJPARepository, only()).updateMemberById(MEMBER_ID, MEMBER_NAME);
+		verify(memberJPARepository, only()).findById(MEMBER_ID);
 	}
 
 	@Test

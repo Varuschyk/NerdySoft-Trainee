@@ -1,11 +1,9 @@
 package com.nerdysoft.apicore.service.impl;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.nerdysoft.apicore.exception.book.BookBadRequestException;
 import com.nerdysoft.apicore.exception.book.BookNotFoundException;
 import com.nerdysoft.apicore.mapper.book.BookMapper;
+import com.nerdysoft.apicore.persistence.entity.BookEntity;
 import com.nerdysoft.apicore.persistence.repository.BookJPARepository;
 import com.nerdysoft.apicore.pojo.book.BookReadPojo;
 import com.nerdysoft.apicore.pojo.book.BookWritePojo;
@@ -14,6 +12,8 @@ import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,26 +33,17 @@ public class BookServiceImpl implements BookService {
 
   @Nonnull
   @Override
-  @Transactional(readOnly = true)
-  public List<BookReadPojo> getBorrowedByMember(@Nonnull final String memberName) {
-    final var books =  bookJPARepository.findAllByMembersIsNotEmptyAndMembersName(memberName);
-    return books.stream().map(bookMapper::toBookReadPojo).toList();
-  }
-
-  @Nonnull
-  @Override
-  @Transactional(readOnly = true)
-  public List<BookReadPojo> getBorrowedByTitle(@Nonnull final String title) {
-    final var books =  bookJPARepository.findAllByMembersIsNotEmptyAndTitle(title);
-    return books.stream().map(bookMapper::toBookReadPojo).toList();
-  }
-
-  @Nonnull
-  @Override
   @Transactional
   public BookReadPojo create(@Nonnull final BookWritePojo bookWritePojo) {
-    final var bookToSave = bookMapper.toBookEntity(bookWritePojo);
-    final var savedBookEntity = bookJPARepository.upsertBook(bookToSave.getAuthor(), bookToSave.getTitle());
+    BookEntity bookToSave = bookMapper.toBookEntity(bookWritePojo);
+
+    final var bookEntity = bookJPARepository.findByTitleAndAuthor(bookToSave.getTitle(), bookToSave.getAuthor());
+    if (bookEntity.isPresent()) {
+      bookToSave = bookEntity.get();
+      bookToSave.setAmount(bookToSave.getAmount() + 1);
+    }
+
+    final var savedBookEntity = bookJPARepository.save(bookToSave);
     return bookMapper.toBookReadPojo(savedBookEntity);
   }
 
@@ -61,10 +52,12 @@ public class BookServiceImpl implements BookService {
   @Transactional
   public BookReadPojo update(@Nonnull final Long id,
                              @Nonnull final BookWritePojo bookWritePojo) {
-    final var updateBookEntity = bookJPARepository.updateBookById(id,
-        bookWritePojo.getTitle(), bookWritePojo.getAuthor(), bookWritePojo.getAmount())
+    final var bookEntity = bookJPARepository.findById(id)
         .orElseThrow(() -> new BookNotFoundException("Book not found"));
-    return bookMapper.toBookReadPojo(updateBookEntity);
+    final var bookEntityToUpdate = bookMapper.toBookEntity(bookWritePojo);
+    bookEntityToUpdate.setId(bookEntity.getId());
+    final var updatedBookEntity = bookJPARepository.save(bookEntityToUpdate);
+    return bookMapper.toBookReadPojo(updatedBookEntity);
   }
 
   @Nonnull

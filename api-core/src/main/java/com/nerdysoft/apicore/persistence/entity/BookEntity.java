@@ -33,8 +33,8 @@ public class BookEntity {
   @NotBlank String title;
 
   @Column(name = "author", nullable = false)
-  @Pattern(regexp = "^[A-Z][a-z]+\\\\s[A-Z][a-z]+$",
-      message = "Author doesn't match required initials.")
+  @Pattern(regexp = "^[A-Z][a-z]+\\s[A-Z][a-z]+$",
+      message = "Author doesn't match required initials. Example: Olekandr Varush")
   @Length(min = 3)
   @NotBlank String author;
 

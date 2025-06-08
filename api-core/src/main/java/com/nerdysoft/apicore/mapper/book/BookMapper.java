@@ -9,6 +9,8 @@ import jakarta.annotation.Nonnull;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
+import java.util.Collections;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookMapper {
 
@@ -16,7 +18,14 @@ public interface BookMapper {
 
   BookReadPojo toBookReadPojo(@Nonnull final BookEntity bookEntity);
 
-  BookEntity toBookEntity(@Nonnull final BookWritePojo bookWritePojo);
+  default BookEntity toBookEntity(@Nonnull final BookWritePojo bookWritePojo) {
+    return BookEntity.builder()
+        .title(bookWritePojo.getTitle())
+        .author(bookWritePojo.getAuthor())
+        .amount(bookWritePojo.getAmount())
+        .members(Collections.emptyList())
+        .build();
+  }
 
   BookWritePojo toBookWritePojo(@Nonnull final BookRequestDto bookRequestDto);
 }

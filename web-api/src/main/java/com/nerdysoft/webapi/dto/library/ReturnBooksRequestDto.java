@@ -1,17 +1,15 @@
-package com.nerdysoft.webapi.dto.book;
+package com.nerdysoft.webapi.dto.library;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.List;
-
 @Value
 @Builder
 @Jacksonized
 @JsonInclude
-public class BooksResponseDto {
-  List<BookResponseDto> books;
-  int borrowedSize;
+public class ReturnBooksRequestDto {
+	Long memberId;
+	Long bookId;
 }

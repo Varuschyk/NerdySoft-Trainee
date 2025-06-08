@@ -1,12 +1,14 @@
 package com.nerdysoft.apicore.service.impl;
 
-import java.util.ArrayList;
 import com.nerdysoft.apicore.exception.book.BookNotFoundException;
 import com.nerdysoft.apicore.exception.library.LibraryBadRequestException;
 import com.nerdysoft.apicore.exception.member.MemberNotFoundException;
+import com.nerdysoft.apicore.mapper.book.BookMapper;
 import com.nerdysoft.apicore.mapper.member.MemberMapper;
+import com.nerdysoft.apicore.persistence.entity.BookEntity;
 import com.nerdysoft.apicore.persistence.repository.BookJPARepository;
 import com.nerdysoft.apicore.persistence.repository.MemberJPARepository;
+import com.nerdysoft.apicore.pojo.book.BookReadPojo;
 import com.nerdysoft.apicore.pojo.member.MemberReadPojo;
 import com.nerdysoft.apicore.properties.LibraryBookPropertiesHolder;
 import com.nerdysoft.apicore.service.LibraryService;
@@ -16,15 +18,39 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @EnableConfigurationProperties(LibraryBookPropertiesHolder.class)
 public class LibraryServiceImpl implements LibraryService {
 
+  private final LibraryBookPropertiesHolder libraryBookPropertiesHolder;
   private final BookJPARepository bookJPARepository;
   private final MemberJPARepository memberRepository;
   private final MemberMapper memberMapper;
-  private final LibraryBookPropertiesHolder libraryBookPropertiesHolder;
+  private final BookMapper bookMapper;
+
+  @Nonnull
+  @Override
+  @Transactional(readOnly = true)
+  public List<BookReadPojo> getBorrowedBooksByMember(@Nonnull final String memberName) {
+    final var memberEntity = memberRepository.findByName(memberName)
+        .orElseThrow(() -> new MemberNotFoundException(memberName));
+    final var books = memberEntity.getBorrowedBooks();
+    return books.stream().map(bookMapper::toBookReadPojo).toList();
+  }
+
+  @Nonnull
+  @Override
+  @Transactional(readOnly = true)
+  public List<BookReadPojo> getBorrowedBooksByTitle(@Nonnull final String title) {
+    final var memberEntity = memberRepository.findByBorrowedBooksIsNotEmptyAndBorrowedBooksTitle(title);
+    final var books = memberEntity.stream().flatMap(member -> member.getBorrowedBooks().stream()).toList();
+    return books.stream().map(bookMapper::toBookReadPojo).toList();
+  }
 
   @Override
   @Transactional
@@ -72,8 +98,8 @@ public class LibraryServiceImpl implements LibraryService {
       throw new LibraryBadRequestException("Member didn't borrow this book");
     }
 
-    final var updatedMemberBorrowedBooks = memberBorrowedBooks.stream()
-        .filter(book -> !book.getId().equals(bookId)).toList();
+    ArrayList<BookEntity> updatedMemberBorrowedBooks = memberBorrowedBooks.stream()
+        .filter(book -> !book.getId().equals(bookId)).collect(Collectors.toCollection(ArrayList::new));
 
     memberEntity.setBorrowedBooks(updatedMemberBorrowedBooks);
     bookEntity.setAmount(bookEntity.getAmount() + 1);

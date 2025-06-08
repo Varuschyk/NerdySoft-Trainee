@@ -5,13 +5,11 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.List;
-
 @Value
 @Builder
 @Jacksonized
 @JsonInclude
-public class BooksResponseDto {
-  List<BookResponseDto> books;
-  int borrowedSize;
+public class BookInformationResponseDto {
+	String title;
+	String author;
 }

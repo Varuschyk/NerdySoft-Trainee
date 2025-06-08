@@ -4,15 +4,9 @@ import com.nerdysoft.apicore.pojo.book.BookReadPojo;
 import com.nerdysoft.apicore.pojo.book.BookWritePojo;
 import jakarta.annotation.Nonnull;
 
-import java.util.List;
-
 public interface BookService {
 
   BookReadPojo get(@Nonnull Long id);
-
-  List<BookReadPojo> getBorrowedByMember(@Nonnull String memberName);
-
-  List<BookReadPojo> getBorrowedByTitle(@Nonnull String title);
 
   BookReadPojo create(@Nonnull BookWritePojo bookWritePojo);
 
