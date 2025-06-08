@@ -5,6 +5,7 @@
 ---
 - [Swagger](#swagger)
 - [Spring profiles](#spring-profiles)
+- [Database configuration](#database-configuration)
 
 ## Description 
 The tech test is a programming exercise to evaluate the candidate's 
@@ -73,4 +74,16 @@ If you want to run application using other environment use command: `-Dspring.pr
 
 At current project available only the `dev` profile.
 
+## Database configuration
+
+Database is configured as `inmemory` so you do not need to configure it manually, 
+just run application and it automatically will work fine.
+
+If you want to dive into DB, follow the link: http://localhost:8080/h2-console.
+
+URL: _**jdbc:h2:mem:nerdySoft**_
+
+Login: _**trainee**_
+
+Password: _**trainee**_
 
